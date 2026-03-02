@@ -3,8 +3,9 @@
 
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 interface FormData {
   // Informações Pessoais
@@ -55,6 +56,19 @@ interface FormData {
 
 export default function FormularioRegistroAcademia() {
   const router = useRouter()
+  const { data: session, status } = useSession()
+
+  // redirect to login if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.replace('/login')
+    }
+  }, [status, router])
+
+  if (status !== 'authenticated') {
+    return null
+  }
+
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',

@@ -55,8 +55,8 @@ export default async function LoginPage() {
             svg={GoogleSVG}
             color="bg-blue-600"
             hover="bg-blue-700"
-            alt="Sign in with Google"
-            text="Sign in with Google"
+            alt="Logue com Google"
+            text="Logue com Google"
           />
 
           {/* <Button

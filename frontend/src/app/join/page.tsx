@@ -4,8 +4,13 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 export default function JoinWithCode() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+
   const [code, setCode] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState('')
@@ -15,16 +20,26 @@ export default function JoinWithCode() {
   const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
-    // Focar no input automaticamente ao carregar a página
-    inputRef.current?.focus()
+    if (status === 'unauthenticated') {
+      router.replace('/login')
+      return
+    }
+    if (status === 'authenticated') {
+      // Focar no input automaticamente ao carregar a página
+      inputRef.current?.focus()
+    }
 
-    // Cleanup do timeout
+    // Cleanup do timeout quando o componente desmonta
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current)
       }
     }
-  }, [])
+  }, [status, router])
+
+  if (status !== 'authenticated') {
+    return null
+  }
 
   const playBeep = (count: number) => {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
@@ -43,7 +58,6 @@ export default function JoinWithCode() {
       oscillator.stop(time + 0.1)
     }
 
-    // Tocar múltiplos bips com intervalo de 0.15 segundos
     for (let i = 0; i < count; i++) {
       playSingleBeep(audioContext.currentTime + (i * 0.15))
     }
@@ -56,18 +70,15 @@ export default function JoinWithCode() {
     setError('')
     setIsProcessing(false)
     
-    // Focar no input para o próximo cliente
     setTimeout(() => {
       inputRef.current?.focus()
     }, 100)
   }
 
   const fakeHttpRequest = async (code: string): Promise<{ success: boolean; message: string }> => {
-    // Simular latência de rede (300ms a 800ms)
     const delay = Math.random() * 500 + 300
     await new Promise(resolve => setTimeout(resolve, delay))
 
-    // Código válido (você pode alterar para o código desejado)
     const VALID_CODE = '123456'
 
     if (code === VALID_CODE) {
@@ -91,7 +102,6 @@ export default function JoinWithCode() {
       return
     }
 
-    // Cancelar qualquer timeout pendente
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
@@ -102,31 +112,25 @@ export default function JoinWithCode() {
     setSuccessMessage('')
 
     try {
-      // Fazer a requisição fake
       const response = await fakeHttpRequest(code)
 
       if (response.success) {
-        // Código correto - um bip
         playBeep(1)
         setSuccess(true)
         setSuccessMessage(response.message)
         
-        // Limpar tudo após 5 segundos para o próximo cliente
         timeoutRef.current = setTimeout(() => {
           resetForNextCustomer()
         }, 5000)
       } else {
-        // Código errado - três bips
         playBeep(3)
         setError(response.message)
         setIsProcessing(false)
         
-        // Limpar o campo e focar novamente
         setCode('')
         inputRef.current?.focus()
       }
     } catch (error) {
-      // Erro na requisição
       playBeep(3)
       setError('Erro na comunicação. Tente novamente.')
       setIsProcessing(false)
@@ -136,7 +140,6 @@ export default function JoinWithCode() {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Limpar erro ao digitar
     if (error) {
       setError('')
     }
@@ -204,7 +207,6 @@ export default function JoinWithCode() {
               autoComplete="off"
             />
             
-            {/* Mensagem de erro */}
             {error && (
               <div className="mt-3 flex items-center text-red-600 text-sm">
                 <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -214,7 +216,6 @@ export default function JoinWithCode() {
               </div>
             )}
 
-            {/* Mensagem de sucesso */}
             {success && successMessage && (
               <div className="mt-3 p-4 bg-green-100 border border-green-400 rounded-lg">
                 <div className="flex items-center text-green-700">
@@ -224,7 +225,6 @@ export default function JoinWithCode() {
                   <span className="font-medium">{successMessage}</span>
                 </div>
                 
-                {/* Timer/Progress bar */}
                 <div className="mt-2 w-full bg-green-200 rounded-full h-1.5">
                   <div 
                     className="bg-green-600 h-1.5 rounded-full transition-all duration-[5000ms] linear"
@@ -238,7 +238,6 @@ export default function JoinWithCode() {
             )}
           </div>
 
-          {/* Botão de submit (opcional, pode enviar com Enter) */}
           {!success && (
             <button
               type="submit"
@@ -265,7 +264,6 @@ export default function JoinWithCode() {
             </button>
           )}
 
-          {/* Botão de reset manual (aparece apenas durante o sucesso) */}
           {success && (
             <button
               type="button"
@@ -277,7 +275,6 @@ export default function JoinWithCode() {
           )}
         </form>
 
-        {/* Instruções */}
         <div className="mt-6 text-center text-sm text-gray-500">
           <p>Digite seu código e pressione Enter</p>
           <p className="mt-1 text-xs">
@@ -285,7 +282,6 @@ export default function JoinWithCode() {
           </p>
         </div>
 
-        {/* Indicador de status do código */}
         <div className="mt-4 flex justify-center space-x-2">
           <div className={`w-3 h-3 rounded-full ${code.length > 0 ? 'bg-blue-500' : 'bg-gray-300'}`} />
           <div className={`w-3 h-3 rounded-full ${code.length > 2 ? 'bg-blue-500' : 'bg-gray-300'}`} />
@@ -293,7 +289,6 @@ export default function JoinWithCode() {
           <div className={`w-3 h-3 rounded-full ${code.length > 6 ? 'bg-blue-500' : 'bg-gray-300'}`} />
         </div>
 
-        {/* Contador de tentativas (opcional) */}
         {isProcessing && (
           <div className="mt-4 text-center text-xs text-gray-400">
             Simulando requisição HTTP...
