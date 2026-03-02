@@ -20,16 +20,22 @@ export default async function Navbar() {
               Home
             </Link>
             <Link
+              href="/costumers"
+              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+            >
+              Cadastrar Aluno
+            </Link>
+            <Link
+              href="/join"
+              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+            >
+              Entrada de Alunos
+            </Link>
+            <Link
               href="/about"
               className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
             >
-              About
-            </Link>
-            <Link
-              href="/services"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Services
+              Sobre
             </Link>
           </div>
           <div>
