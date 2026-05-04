@@ -1,6 +1,6 @@
 import { signIn, auth } from "@/auth";
 
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { redirect } from "next/navigation";
 
 import GoogleSVG from "@/../public/google.svg";
@@ -14,7 +14,7 @@ function Button({
   hover,
 }: {
   signInMethod: string;
-  svg: any;
+  svg: StaticImageData;
   alt: string;
   text: string;
   color: string;

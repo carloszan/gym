@@ -56,18 +56,7 @@ interface FormData {
 
 export default function FormularioRegistroAcademia() {
   const router = useRouter()
-  const { data: session, status } = useSession()
-
-  // redirect to login if not authenticated
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.replace('/login')
-    }
-  }, [status, router])
-
-  if (status !== 'authenticated') {
-    return null
-  }
+  const { status } = useSession()
 
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -107,6 +96,17 @@ export default function FormularioRegistroAcademia() {
 
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // redirect to login if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.replace('/login')
+    }
+  }, [status, router])
+
+  if (status !== 'authenticated') {
+    return null
+  }
 
   const planosAssinatura = [
     { id: 'basico', name: 'Básico - Acesso em horário reduzido', price: 49.90 },

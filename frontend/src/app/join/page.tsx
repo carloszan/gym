@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
 export default function JoinWithCode() {
-  const { data: session, status } = useSession()
+  const { status } = useSession()
   const router = useRouter()
 
   const [code, setCode] = useState('')
@@ -42,7 +42,8 @@ export default function JoinWithCode() {
   }
 
   const playBeep = (count: number) => {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
+    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+    const audioContext = new AudioContextClass()
     
     const playSingleBeep = (time: number) => {
       const oscillator = audioContext.createOscillator()
@@ -130,7 +131,7 @@ export default function JoinWithCode() {
         setCode('')
         inputRef.current?.focus()
       }
-    } catch (error) {
+    } catch {
       playBeep(3)
       setError('Erro na comunicação. Tente novamente.')
       setIsProcessing(false)
@@ -139,7 +140,7 @@ export default function JoinWithCode() {
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = () => {
     if (error) {
       setError('')
     }

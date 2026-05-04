@@ -1,5 +1,3 @@
-import type { NextRequest } from 'next/server'
- 
-export function proxy(request: NextRequest) {
+export function proxy() {
   // Proxy logic goes here
 }
