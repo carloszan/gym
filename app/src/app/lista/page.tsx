@@ -33,6 +33,8 @@ export default function ListaPage() {
   const [hasMore, setHasMore] = useState(false)
   const [cursors, setCursors] = useState<string[]>([''])
   const [currentPage, setCurrentPage] = useState(0)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -73,6 +75,20 @@ export default function ListaPage() {
   function goPrev() {
     setCursors(prev => prev.slice(0, -1))
     setCurrentPage(p => p - 1)
+  }
+
+  async function deleteStudent(id: string) {
+    setDeleteLoading(true)
+    try {
+      const res = await fetch(`/api/students/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error()
+      setStudents(prev => prev.filter(s => s.id !== id))
+      setDeletingId(null)
+    } catch {
+      setError('Não foi possível excluir o aluno. Tente novamente.')
+    } finally {
+      setDeleteLoading(false)
+    }
   }
 
   function formatDate(iso: string) {
@@ -120,7 +136,7 @@ export default function ListaPage() {
                     <th className="px-4 py-3 text-left">Plano</th>
                     <th className="px-4 py-3 text-left">Início</th>
                     <th className="px-4 py-3 text-left">Cadastrado em</th>
-                  <th className="px-4 py-3"></th>
+                    <th className="px-4 py-3"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -133,9 +149,37 @@ export default function ListaPage() {
                       <td className="px-4 py-3 text-gray-600">{formatDate(s.startDate)}</td>
                       <td className="px-4 py-3 text-gray-600">{formatDate(s.createdAt)}</td>
                       <td className="px-4 py-3">
-                        <Link href={`/students/${s.id}/edit`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                          Editar
-                        </Link>
+                        <div className="flex items-center gap-3">
+                          <Link href={`/students/${s.id}/edit`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            Editar
+                          </Link>
+                          {deletingId === s.id ? (
+                            <span className="flex items-center gap-2 text-sm">
+                              <span className="text-gray-600">Tem certeza?</span>
+                              <button
+                                onClick={() => deleteStudent(s.id)}
+                                disabled={deleteLoading}
+                                className="text-red-600 hover:text-red-800 font-medium disabled:opacity-40"
+                              >
+                                Sim
+                              </button>
+                              <button
+                                onClick={() => setDeletingId(null)}
+                                disabled={deleteLoading}
+                                className="text-gray-500 hover:text-gray-700 font-medium disabled:opacity-40"
+                              >
+                                Não
+                              </button>
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => setDeletingId(s.id)}
+                              className="text-red-500 hover:text-red-700 text-sm font-medium"
+                            >
+                              Excluir
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -155,9 +199,37 @@ export default function ListaPage() {
                     {s.startDate && <span>Início: {formatDate(s.startDate)}</span>}
                     <span>Cadastrado: {formatDate(s.createdAt)}</span>
                   </div>
-                  <Link href={`/students/${s.id}/edit`} className="text-blue-600 text-sm font-medium">
-                    Editar →
-                  </Link>
+                  <div className="flex items-center gap-4">
+                    <Link href={`/students/${s.id}/edit`} className="text-blue-600 text-sm font-medium">
+                      Editar →
+                    </Link>
+                    {deletingId === s.id ? (
+                      <span className="flex items-center gap-2 text-sm">
+                        <span className="text-gray-600">Tem certeza?</span>
+                        <button
+                          onClick={() => deleteStudent(s.id)}
+                          disabled={deleteLoading}
+                          className="text-red-600 hover:text-red-800 font-medium disabled:opacity-40"
+                        >
+                          Sim
+                        </button>
+                        <button
+                          onClick={() => setDeletingId(null)}
+                          disabled={deleteLoading}
+                          className="text-gray-500 hover:text-gray-700 font-medium disabled:opacity-40"
+                        >
+                          Não
+                        </button>
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => setDeletingId(s.id)}
+                        className="text-red-500 hover:text-red-700 text-sm font-medium"
+                      >
+                        Excluir
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
