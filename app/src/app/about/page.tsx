@@ -39,9 +39,17 @@ export default function About() {
             </div>
           </div>
         </div>
-        <p className="text-xs text-gray-400 mt-6 text-center">
+        <p className="text-xs text-gray-400 mt-6 text-center space-x-3">
           <Link href="/politica-de-privacidade" className="hover:text-gray-600 underline">
             Política de Privacidade
+          </Link>
+          <span>·</span>
+          <Link href="/termos-de-uso" className="hover:text-gray-600 underline">
+            Termos de Uso
+          </Link>
+          <span>·</span>
+          <Link href="/politica-de-cookies" className="hover:text-gray-600 underline">
+            Política de Cookies
           </Link>
         </p>
       </div>

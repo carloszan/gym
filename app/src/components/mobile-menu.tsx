@@ -71,12 +71,26 @@ export default function MobileMenu({ isLoggedIn, onSignOut }: Props) {
           </Link>
 
           {!isLoggedIn && (
-            <Link
-              href="/politica-de-privacidade"
-              className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
-            >
-              Política de Privacidade
-            </Link>
+            <>
+              <Link
+                href="/politica-de-privacidade"
+                className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
+              >
+                Política de Privacidade
+              </Link>
+              <Link
+                href="/termos-de-uso"
+                className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
+              >
+                Termos de Uso
+              </Link>
+              <Link
+                href="/politica-de-cookies"
+                className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
+              >
+                Política de Cookies
+              </Link>
+            </>
           )}
 
           {isLoggedIn ? (

@@ -61,12 +61,26 @@ export default async function Navbar() {
               </Link>
 
               {!isLoggedIn && (
-                <Link
-                  href="/politica-de-privacidade"
-                  className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-                >
-                  Política de Privacidade
-                </Link>
+                <>
+                  <Link
+                    href="/politica-de-privacidade"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Política de Privacidade
+                  </Link>
+                  <Link
+                    href="/termos-de-uso"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Termos de Uso
+                  </Link>
+                  <Link
+                    href="/politica-de-cookies"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Política de Cookies
+                  </Link>
+                </>
               )}
             </div>
           </div>
