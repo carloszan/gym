@@ -15,12 +15,25 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ id: ref.id }, { status: 201 })
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const session = await auth()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const snapshot = await adminDb.collection('students').orderBy('createdAt', 'desc').get()
-  const students = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+  const { searchParams } = new URL(req.url)
+  const limit = Math.min(parseInt(searchParams.get('limit') ?? '20'), 100)
+  const startAfterId = searchParams.get('startAfter')
 
-  return NextResponse.json(students)
+  let query = adminDb.collection('students').orderBy('createdAt', 'desc').limit(limit + 1)
+
+  if (startAfterId) {
+    const cursorDoc = await adminDb.collection('students').doc(startAfterId).get()
+    if (cursorDoc.exists) query = query.startAfter(cursorDoc)
+  }
+
+  const snapshot = await query.get()
+  const hasMore = snapshot.docs.length > limit
+  const docs = hasMore ? snapshot.docs.slice(0, limit) : snapshot.docs
+  const students = docs.map(doc => ({ id: doc.id, ...doc.data() }))
+
+  return NextResponse.json({ students, hasMore })
 }
