@@ -176,7 +176,7 @@ export default function CheckinPage() {
               type="text"
               id="code"
               value={code}
-              onChange={(e) => setCode(e.target.value)}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
               onKeyDown={handleKeyDown}
               disabled={isProcessing || success}
               className={`
@@ -189,7 +189,7 @@ export default function CheckinPage() {
                 disabled:opacity-50 disabled:cursor-not-allowed
               `}
               placeholder="000000"
-              maxLength={10}
+              maxLength={6}
               autoComplete="off"
             />
             
@@ -269,7 +269,7 @@ export default function CheckinPage() {
           <div className={`w-3 h-3 rounded-full ${code.length > 0 ? 'bg-blue-500' : 'bg-gray-300'}`} />
           <div className={`w-3 h-3 rounded-full ${code.length > 2 ? 'bg-blue-500' : 'bg-gray-300'}`} />
           <div className={`w-3 h-3 rounded-full ${code.length > 4 ? 'bg-blue-500' : 'bg-gray-300'}`} />
-          <div className={`w-3 h-3 rounded-full ${code.length > 6 ? 'bg-blue-500' : 'bg-gray-300'}`} />
+          <div className={`w-3 h-3 rounded-full ${code.length >= 6 ? 'bg-blue-500' : 'bg-gray-300'}`} />
         </div>
 
       </div>

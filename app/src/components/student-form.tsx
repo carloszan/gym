@@ -351,7 +351,7 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode,
         return (
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Token de Acesso</h2>
-            <p className="text-sm text-gray-600">Este código de 6 dígitos será usado para registrar a entrada do aluno na academia.</p>
+            <p className="text-sm text-gray-600">Este código de 1 a 6 dígitos será usado para registrar a entrada do aluno na academia.</p>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Token de Check-in *</label>
               <div className="flex gap-2">
@@ -365,7 +365,7 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode,
                   }}
                   maxLength={6}
                   inputMode="numeric"
-                  pattern="[0-9]{6}"
+                  pattern="[0-9]{1,6}"
                   placeholder="000000"
                   className={`${inputClass} tracking-widest text-lg font-mono`}
                 />

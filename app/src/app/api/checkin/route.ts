@@ -8,6 +8,10 @@ export async function POST(req: NextRequest) {
 
   const { code } = await req.json()
 
+  if (!/^\d{1,6}$/.test(code)) {
+    return NextResponse.json({ success: false, message: 'Código inválido. Tente novamente.' })
+  }
+
   const snapshot = await adminDb
     .collection('students')
     .where('checkInToken', '==', code)
