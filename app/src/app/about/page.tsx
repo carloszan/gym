@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function About() {
   return (
     <div className="min-h-screen py-8 bg-gray-50">
@@ -37,6 +39,11 @@ export default function About() {
             </div>
           </div>
         </div>
+        <p className="text-xs text-gray-400 mt-6 text-center">
+          <Link href="/politica-de-privacidade" className="hover:text-gray-600 underline">
+            Política de Privacidade
+          </Link>
+        </p>
       </div>
     </div>
   )
