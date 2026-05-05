@@ -126,13 +126,17 @@ export default function StudentRegistrationPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
-    // Simular chamada à API
-    setTimeout(() => {
-      console.log('Formulário enviado:', formData)
-      setIsSubmitting(false)
+
+    const res = await fetch('/api/students', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    })
+
+    setIsSubmitting(false)
+    if (res.ok) {
       router.push('/')
-    }, 1500)
+    }
   }
 
   const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4))

@@ -75,28 +75,9 @@ export default function CheckinPage() {
     }, 100)
   }
 
-  const fakeHttpRequest = async (code: string): Promise<{ success: boolean; message: string }> => {
-    const delay = Math.random() * 500 + 300
-    await new Promise(resolve => setTimeout(resolve, delay))
-
-    const VALID_CODE = '123456'
-
-    if (code === VALID_CODE) {
-      return {
-        success: true,
-        message: 'Acesso permitido! Bem-vindo à academia!'
-      }
-    } else {
-      return {
-        success: false,
-        message: 'Código inválido. Tente novamente.'
-      }
-    }
-  }
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!code.trim()) {
       setError('Por favor, insira um código')
       return
@@ -112,7 +93,12 @@ export default function CheckinPage() {
     setSuccessMessage('')
 
     try {
-      const response = await fakeHttpRequest(code)
+      const res = await fetch('/api/checkin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      })
+      const response: { success: boolean; message: string } = await res.json()
 
       if (response.success) {
         playBeep(1)
