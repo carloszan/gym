@@ -59,6 +59,15 @@ export default async function Navbar() {
               >
                 Sobre
               </Link>
+
+              {!isLoggedIn && (
+                <Link
+                  href="/politica-de-privacidade"
+                  className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                >
+                  Política de Privacidade
+                </Link>
+              )}
             </div>
           </div>
 

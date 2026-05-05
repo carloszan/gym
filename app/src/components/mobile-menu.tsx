@@ -70,6 +70,15 @@ export default function MobileMenu({ isLoggedIn, onSignOut }: Props) {
             Sobre
           </Link>
 
+          {!isLoggedIn && (
+            <Link
+              href="/politica-de-privacidade"
+              className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
+            >
+              Política de Privacidade
+            </Link>
+          )}
+
           {isLoggedIn ? (
             <button
               className="text-left text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
