@@ -98,12 +98,12 @@ export default function CheckinPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code }),
       })
-      const response: { success: boolean; message: string } = await res.json()
+      const response: { success: boolean; message?: string; firstName?: string; lastName?: string } = await res.json()
 
       if (response.success) {
         playBeep(1)
         setSuccess(true)
-        setSuccessMessage(response.message)
+        setSuccessMessage(`Bem-vindo à academia, ${response.firstName} ${response.lastName}!`)
         
         timeoutRef.current = setTimeout(() => {
           resetForNextStudent()
@@ -263,9 +263,6 @@ export default function CheckinPage() {
 
         <div className="mt-6 text-center text-sm text-gray-500">
           <p>Digite seu código e pressione Enter</p>
-          <p className="mt-1 text-xs">
-            (Use o código <span className="font-mono bg-gray-100 px-2 py-1 rounded">123456</span> para testar)
-          </p>
         </div>
 
         <div className="mt-4 flex justify-center space-x-2">
@@ -275,11 +272,6 @@ export default function CheckinPage() {
           <div className={`w-3 h-3 rounded-full ${code.length > 6 ? 'bg-blue-500' : 'bg-gray-300'}`} />
         </div>
 
-        {isProcessing && (
-          <div className="mt-4 text-center text-xs text-gray-400">
-            Simulando requisição HTTP...
-          </div>
-        )}
       </div>
     </div>
   )
