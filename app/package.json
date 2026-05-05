@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "check": "yarn typecheck && yarn lint"
+    "check": "yarn typecheck && yarn lint",
+    "docker:build": "docker build -t carloszan/gym:$npm_package_version -t carloszan/gym:latest .",
+    "docker:push": "docker push carloszan/gym:$npm_package_version && docker push carloszan/gym:latest",
+    "docker:deploy": "yarn docker:build && yarn docker:push"
   },
   "dependencies": {
     "firebase": "^12.12.1",
