@@ -33,12 +33,6 @@ export default async function Navbar() {
               {isLoggedIn && (
                 <>
                   <Link
-                    href="/students"
-                    className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    Cadastrar Aluno
-                  </Link>
-                  <Link
                     href="/checkin"
                     className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                   >
@@ -49,6 +43,12 @@ export default async function Navbar() {
                     className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Lista de Alunos
+                  </Link>
+                  <Link
+                    href="/students"
+                    className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Cadastrar Aluno
                   </Link>
                 </>
               )}

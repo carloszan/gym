@@ -42,12 +42,6 @@ export default function MobileMenu({ isLoggedIn, onSignOut }: Props) {
           {isLoggedIn && (
             <>
               <Link
-                href="/students"
-                className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
-              >
-                Cadastrar Aluno
-              </Link>
-              <Link
                 href="/checkin"
                 className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
               >
@@ -58,6 +52,12 @@ export default function MobileMenu({ isLoggedIn, onSignOut }: Props) {
                 className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
               >
                 Lista de Alunos
+              </Link>
+              <Link
+                href="/students"
+                className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
+              >
+                Cadastrar Aluno
               </Link>
             </>
           )}
