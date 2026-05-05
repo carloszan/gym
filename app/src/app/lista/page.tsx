@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 
 interface Student {
   id: string
@@ -119,6 +120,7 @@ export default function ListaPage() {
                     <th className="px-4 py-3 text-left">Plano</th>
                     <th className="px-4 py-3 text-left">Início</th>
                     <th className="px-4 py-3 text-left">Cadastrado em</th>
+                  <th className="px-4 py-3"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -130,6 +132,11 @@ export default function ListaPage() {
                       <td className="px-4 py-3 text-gray-600">{s.membershipType || '—'}</td>
                       <td className="px-4 py-3 text-gray-600">{formatDate(s.startDate)}</td>
                       <td className="px-4 py-3 text-gray-600">{formatDate(s.createdAt)}</td>
+                      <td className="px-4 py-3">
+                        <Link href={`/students/${s.id}/edit`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                          Editar
+                        </Link>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -148,6 +155,9 @@ export default function ListaPage() {
                     {s.startDate && <span>Início: {formatDate(s.startDate)}</span>}
                     <span>Cadastrado: {formatDate(s.createdAt)}</span>
                   </div>
+                  <Link href={`/students/${s.id}/edit`} className="text-blue-600 text-sm font-medium">
+                    Editar →
+                  </Link>
                 </div>
               ))}
             </div>
