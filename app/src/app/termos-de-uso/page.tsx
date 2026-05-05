@@ -4,7 +4,7 @@ export default function TermosDeUso() {
       <div className="max-w-2xl mx-auto px-4">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">Termos de Uso</h1>
-          <p className="text-gray-500 text-sm mt-1">SJN Academia</p>
+          <p className="text-gray-500 text-sm mt-1">Aquarius</p>
         </div>
 
         <div className="space-y-4">
@@ -12,7 +12,7 @@ export default function TermosDeUso() {
             <h2 className="font-semibold text-gray-800 mb-2">Aceitação dos Termos</h2>
             <p className="text-sm text-gray-600">
               Ao utilizar este sistema, você concorda com os presentes Termos de Uso.
-              O uso do sistema é restrito a funcionários e operadores autorizados pela SJN Academia.
+              O uso do sistema é restrito a funcionários e operadores autorizados pela Aquarius.
             </p>
           </div>
 
@@ -38,7 +38,7 @@ export default function TermosDeUso() {
           <div className="bg-white rounded-xl shadow p-5">
             <h2 className="font-semibold text-gray-800 mb-2">Dados dos Alunos</h2>
             <p className="text-sm text-gray-600">
-              Os dados cadastrados pertencem à SJN Academia e aos próprios alunos.
+              Os dados cadastrados pertencem à Aquarius e aos próprios alunos.
               Devem ser utilizados exclusivamente para fins de gestão interna da academia,
               em conformidade com a nossa{' '}
               <a href="/politica-de-privacidade" className="text-blue-600 hover:underline">
@@ -50,7 +50,7 @@ export default function TermosDeUso() {
           <div className="bg-white rounded-xl shadow p-5">
             <h2 className="font-semibold text-gray-800 mb-2">Modificações</h2>
             <p className="text-sm text-gray-600">
-              A SJN Academia reserva-se o direito de alterar estes Termos de Uso a qualquer momento.
+              A Aquarius reserva-se o direito de alterar estes Termos de Uso a qualquer momento.
               O uso continuado do sistema após alterações implica a aceitação dos novos termos.
             </p>
           </div>

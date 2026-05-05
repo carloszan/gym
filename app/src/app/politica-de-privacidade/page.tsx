@@ -4,14 +4,14 @@ export default function PoliticaDePrivacidade() {
       <div className="max-w-2xl mx-auto px-4">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">Política de Privacidade</h1>
-          <p className="text-gray-500 text-sm mt-1">SJN Academia</p>
+          <p className="text-gray-500 text-sm mt-1">Aquarius</p>
         </div>
 
         <div className="space-y-4">
           <div className="bg-white rounded-xl shadow p-5">
             <h2 className="font-semibold text-gray-800 mb-2">Introdução</h2>
             <p className="text-sm text-gray-600">
-              A SJN Academia é responsável pelo tratamento dos dados pessoais coletados por meio deste sistema.
+              A Aquarius é responsável pelo tratamento dos dados pessoais coletados por meio deste sistema.
               Esta política descreve quais dados coletamos, como os utilizamos e como protegemos suas informações,
               em conformidade com a Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018).
             </p>
@@ -64,7 +64,7 @@ export default function PoliticaDePrivacidade() {
           <div className="bg-white rounded-xl shadow p-5">
             <h2 className="font-semibold text-gray-800 mb-2">Contato</h2>
             <p className="text-sm text-gray-600">
-              Para exercer seus direitos ou esclarecer dúvidas sobre esta política, entre em contato com a SJN Academia diretamente na recepção ou pelos canais oficiais da academia.
+              Para exercer seus direitos ou esclarecer dúvidas sobre esta política, entre em contato com a Aquarius diretamente na recepção ou pelos canais oficiais da academia.
             </p>
           </div>
         </div>

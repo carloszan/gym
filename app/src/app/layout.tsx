@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gym",
-  description: "A Gym App",
+  title: "Aquarius",
+  description: "Sistema de gestão da Aquarius",
 };
 
 export default async function RootLayout({

@@ -4,7 +4,7 @@ export default function PoliticaDeCookies() {
       <div className="max-w-2xl mx-auto px-4">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">Política de Cookies</h1>
-          <p className="text-gray-500 text-sm mt-1">SJN Academia</p>
+          <p className="text-gray-500 text-sm mt-1">Aquarius</p>
         </div>
 
         <div className="space-y-4">

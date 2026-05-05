@@ -103,7 +103,7 @@ export default function CheckinPage() {
       if (response.success) {
         playBeep(1)
         setSuccess(true)
-        setSuccessMessage(`Bem-vindo à academia, ${response.firstName ?? ''} ${response.lastName ?? ''}!`)
+        setSuccessMessage(`Bem-vindo à Aquarius, ${response.firstName ?? ''} ${response.lastName ?? ''}!`)
         
         timeoutRef.current = setTimeout(() => {
           resetForNextStudent()
@@ -158,7 +158,7 @@ export default function CheckinPage() {
               />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-800">Acesso à Academia</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Acesso à Aquarius</h1>
           <p className="text-gray-600 mt-2">Digite seu código de acesso para entrar</p>
         </div>
 

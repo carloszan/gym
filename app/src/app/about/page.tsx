@@ -6,11 +6,11 @@ export default function About() {
       <div className="max-w-2xl mx-auto px-4">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">Sobre o Sistema</h1>
-          <p className="text-gray-500 text-sm mt-1">Sistema de gestão da SJN Academia</p>
+          <p className="text-gray-500 text-sm mt-1">Sistema de gestão da Aquarius</p>
         </div>
 
         <p className="text-gray-600 mb-8">
-          Este sistema foi desenvolvido para facilitar a gestão da SJN Academia.
+          Este sistema foi desenvolvido para facilitar a gestão da Aquarius.
           Controle entradas, gerencie alunos e acompanhe relatórios de frequência em um só lugar.
         </p>
 
