@@ -31,11 +31,9 @@ export interface FormData {
   paymentMethod: string
   startDate: string
   monthlyFee: number
-  contractAccepted: boolean
   occupation: string
   howDidYouFind: string
   goals: string
-  photoConsent: boolean
 }
 
 const defaultFormData: FormData = {
@@ -67,11 +65,9 @@ const defaultFormData: FormData = {
   paymentMethod: '',
   startDate: new Date().toISOString().split('T')[0],
   monthlyFee: 0,
-  contractAccepted: false,
   occupation: '',
   howDidYouFind: '',
   goals: '',
-  photoConsent: false,
 }
 
 const planosAssinatura = [
@@ -92,6 +88,7 @@ interface StudentFormProps {
 export default function StudentForm({ initialData, onSubmit, isSubmitting, mode }: StudentFormProps) {
   const [formData, setFormData] = useState<FormData>({ ...defaultFormData, ...initialData })
   const [currentStep, setCurrentStep] = useState(1)
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({})
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -107,7 +104,19 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode 
     await onSubmit(formData)
   }
 
-  const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4))
+  const nextStep = () => {
+    if (currentStep === 1) {
+      const newErrors: Partial<Record<keyof FormData, string>> = {}
+      if (!formData.firstName.trim()) newErrors.firstName = 'Campo obrigatório'
+      if (!formData.lastName.trim()) newErrors.lastName = 'Campo obrigatório'
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors)
+        return
+      }
+    }
+    setErrors({})
+    setCurrentStep(prev => Math.min(prev + 1, 4))
+  }
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1))
 
   const inputClass = 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
@@ -121,11 +130,13 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
-                <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required className={inputClass} />
+                <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} className={`${inputClass} ${errors.firstName ? 'border-red-500' : ''}`} />
+                {errors.firstName && <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Sobrenome *</label>
-                <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required className={inputClass} />
+                <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} className={`${inputClass} ${errors.lastName ? 'border-red-500' : ''}`} />
+                {errors.lastName && <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">E-mail *</label>
@@ -304,16 +315,6 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode 
                 <option value="panfleto">Panfleto/Propaganda</option>
                 <option value="outro">Outro</option>
               </select>
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-center">
-                <input type="checkbox" name="photoConsent" checked={formData.photoConsent} onChange={handleInputChange} className="h-4 w-4 text-blue-600 rounded border-gray-300" />
-                <label className="ml-2 block text-sm text-gray-700">Autorizo o uso de minha foto para identificação</label>
-              </div>
-              <div className="flex items-center">
-                <input type="checkbox" name="contractAccepted" checked={formData.contractAccepted} onChange={handleInputChange} required className="h-4 w-4 text-blue-600 rounded border-gray-300" />
-                <label className="ml-2 block text-sm text-gray-700">Li e concordo com os termos e condições da academia *</label>
-              </div>
             </div>
           </div>
         )
