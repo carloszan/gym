@@ -99,16 +99,24 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode,
   }
 
   useEffect(() => {
-    if (!formData.checkInToken) { setTokenStatus('idle'); return }
-    setTokenStatus('checking')
+    let cancelled = false
     const timer = setTimeout(async () => {
+      if (cancelled) return
+      if (!formData.checkInToken) {
+        setTokenStatus('idle')
+        return
+      }
+      setTokenStatus('checking')
       const params = new URLSearchParams({ token: formData.checkInToken })
       if (studentId) params.set('excludeId', studentId)
       const res = await fetch(`/api/students/check-token?${params}`)
       const data = await res.json()
-      setTokenStatus(data.unique ? 'unique' : 'taken')
+      if (!cancelled) setTokenStatus(data.unique ? 'unique' : 'taken')
     }, 500)
-    return () => clearTimeout(timer)
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
   }, [formData.checkInToken, studentId])
 
   const generateToken = () => {

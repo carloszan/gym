@@ -103,14 +103,14 @@ export default function CheckinPage() {
       if (response.success) {
         playBeep(1)
         setSuccess(true)
-        setSuccessMessage(`Bem-vindo à academia, ${response.firstName} ${response.lastName}!`)
+        setSuccessMessage(`Bem-vindo à academia, ${response.firstName ?? ''} ${response.lastName ?? ''}!`)
         
         timeoutRef.current = setTimeout(() => {
           resetForNextStudent()
         }, 5000)
       } else {
         playBeep(3)
-        setError(response.message)
+        setError(response.message ?? 'Código inválido. Tente novamente.')
         setIsProcessing(false)
         
         setCode('')
