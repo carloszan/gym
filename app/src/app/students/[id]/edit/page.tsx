@@ -67,5 +67,5 @@ export default function EditStudentPage() {
     router.push('/lista')
   }
 
-  return <StudentForm mode="edit" initialData={initialData} isSubmitting={isSubmitting} onSubmit={handleSubmit} />
+  return <StudentForm mode="edit" initialData={initialData} isSubmitting={isSubmitting} onSubmit={handleSubmit} studentId={id} />
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 export interface FormData {
   firstName: string
@@ -34,6 +34,7 @@ export interface FormData {
   occupation: string
   howDidYouFind: string
   goals: string
+  checkInToken: string
 }
 
 const defaultFormData: FormData = {
@@ -68,6 +69,7 @@ const defaultFormData: FormData = {
   occupation: '',
   howDidYouFind: '',
   goals: '',
+  checkInToken: '',
 }
 
 const planosAssinatura = [
@@ -83,12 +85,14 @@ interface StudentFormProps {
   onSubmit: (data: FormData) => Promise<void>
   isSubmitting: boolean
   mode: 'create' | 'edit'
+  studentId?: string
 }
 
-export default function StudentForm({ initialData, onSubmit, isSubmitting, mode }: StudentFormProps) {
+export default function StudentForm({ initialData, onSubmit, isSubmitting, mode, studentId }: StudentFormProps) {
   const [formData, setFormData] = useState<FormData>({ ...defaultFormData, ...initialData })
   const [currentStep, setCurrentStep] = useState(1)
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({})
+  const [tokenStatus, setTokenStatus] = useState<'idle' | 'checking' | 'unique' | 'taken'>('idle')
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -98,9 +102,29 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode 
     }))
   }
 
+  useEffect(() => {
+    if (!formData.checkInToken) { setTokenStatus('idle'); return }
+    setTokenStatus('checking')
+    const timer = setTimeout(async () => {
+      const params = new URLSearchParams({ token: formData.checkInToken })
+      if (studentId) params.set('excludeId', studentId)
+      const res = await fetch(`/api/students/check-token?${params}`)
+      const data = await res.json()
+      setTokenStatus(data.unique ? 'unique' : 'taken')
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [formData.checkInToken, studentId])
+
+  const generateToken = () => {
+    const token = String(Math.floor(100000 + Math.random() * 900000))
+    setFormData(prev => ({ ...prev, checkInToken: token }))
+    setTokenStatus('idle')
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (currentStep !== 4) return
+    if (currentStep !== 5) return
+    if (!formData.checkInToken || tokenStatus !== 'unique') return
     await onSubmit(formData)
   }
 
@@ -115,7 +139,7 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode 
       }
     }
     setErrors({})
-    setCurrentStep(prev => Math.min(prev + 1, 4))
+    setCurrentStep(prev => Math.min(prev + 1, 5))
   }
   const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1))
 
@@ -318,6 +342,45 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode 
             </div>
           </div>
         )
+
+      case 5:
+        return (
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">Token de Acesso</h2>
+            <p className="text-sm text-gray-600">Este código de 6 dígitos será usado para registrar a entrada do aluno na academia.</p>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Token de Check-in *</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  name="checkInToken"
+                  value={formData.checkInToken}
+                  onChange={e => {
+                    const val = e.target.value.replace(/\D/g, '').slice(0, 6)
+                    setFormData(prev => ({ ...prev, checkInToken: val }))
+                  }}
+                  maxLength={6}
+                  inputMode="numeric"
+                  pattern="[0-9]{6}"
+                  placeholder="000000"
+                  className={`${inputClass} tracking-widest text-lg font-mono`}
+                />
+                <button
+                  type="button"
+                  onClick={generateToken}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 whitespace-nowrap"
+                >
+                  Gerar Token
+                </button>
+              </div>
+              <div className="mt-2 text-sm">
+                {tokenStatus === 'checking' && <span className="text-gray-500">Verificando disponibilidade...</span>}
+                {tokenStatus === 'unique' && <span className="text-green-600">✓ Token disponível</span>}
+                {tokenStatus === 'taken' && <span className="text-red-600">✗ Token já está em uso</span>}
+              </div>
+            </div>
+          </div>
+        )
     }
   }
 
@@ -335,7 +398,7 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode 
 
           <div className="px-6 py-4 bg-gray-50 border-b">
             <div className="flex justify-between">
-              {[1, 2, 3, 4].map((step) => (
+              {[1, 2, 3, 4, 5].map((step) => (
                 <div key={step} className="flex items-center">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentStep >= step ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'}`}>
                     {step}
@@ -345,6 +408,7 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode 
                     {step === 2 && 'Endereço'}
                     {step === 3 && 'Saúde'}
                     {step === 4 && 'Plano'}
+                    {step === 5 && 'Acesso'}
                   </span>
                 </div>
               ))}
@@ -364,7 +428,7 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode 
                   Anterior
                 </button>
               )}
-              {currentStep < 4 ? (
+              {currentStep < 5 ? (
                 <button
                   key="next-btn"
                   type="button"
@@ -377,7 +441,7 @@ export default function StudentForm({ initialData, onSubmit, isSubmitting, mode 
                 <button
                   key="submit-btn"
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !formData.checkInToken || tokenStatus !== 'unique'}
                   className="ml-auto px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? 'Salvando...' : mode === 'edit' ? 'Salvar Alterações' : 'Finalizar Cadastro'}
