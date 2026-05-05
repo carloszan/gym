@@ -1,5 +1,4 @@
-// app/join/page.tsx (para App Router)
-// or pages/join.tsx (para Pages Router)
+// app/checkin/page.tsx
 
 'use client'
 
@@ -7,7 +6,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 
-export default function JoinWithCode() {
+export default function CheckinPage() {
   const { status } = useSession()
   const router = useRouter()
 
@@ -64,7 +63,7 @@ export default function JoinWithCode() {
     }
   }
 
-  const resetForNextCustomer = () => {
+  const resetForNextStudent = () => {
     setCode('')
     setSuccess(false)
     setSuccessMessage('')
@@ -121,7 +120,7 @@ export default function JoinWithCode() {
         setSuccessMessage(response.message)
         
         timeoutRef.current = setTimeout(() => {
-          resetForNextCustomer()
+          resetForNextStudent()
         }, 5000)
       } else {
         playBeep(3)
@@ -150,7 +149,7 @@ export default function JoinWithCode() {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
-    resetForNextCustomer()
+    resetForNextStudent()
   }
 
   return (
@@ -233,7 +232,7 @@ export default function JoinWithCode() {
                   />
                 </div>
                 <p className="text-xs text-green-600 mt-1 text-center">
-                  Aguarde 5 segundos para o próximo cliente...
+                  Aguarde 5 segundos para o próximo aluno...
                 </p>
               </div>
             )}
@@ -271,7 +270,7 @@ export default function JoinWithCode() {
               onClick={handleManualReset}
               className="w-full py-3 px-4 rounded-xl bg-gray-100 text-gray-700 font-semibold text-lg hover:bg-gray-200 transition-colors duration-200"
             >
-              Pular espera (próximo cliente)
+              Pular espera (próximo aluno)
             </button>
           )}
         </form>

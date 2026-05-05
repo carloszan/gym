@@ -29,13 +29,13 @@ export default async function Navbar() {
               {isLoggedIn && (
                 <>
                   <Link
-                    href="/costumers"
+                    href="/students"
                     className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Cadastrar Aluno
                   </Link>
                   <Link
-                    href="/join"
+                    href="/checkin"
                     className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium"
                   >
                     Entrada de Alunos
@@ -103,13 +103,13 @@ export default async function Navbar() {
           {isLoggedIn && (
             <>
               <Link
-                href="/costumers"
+                href="/students"
                 className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
               >
                 Cadastrar Aluno
               </Link>
               <Link
-                href="/join"
+                href="/checkin"
                 className="block text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-base font-medium"
               >
                 Entrada de Alunos

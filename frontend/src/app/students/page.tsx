@@ -1,5 +1,4 @@
-// app/register/page.tsx (para App Router)
-// ou pages/register.tsx (para Pages Router)
+// app/students/page.tsx
 
 'use client'
 
@@ -54,7 +53,7 @@ interface FormData {
   photoConsent: boolean
 }
 
-export default function FormularioRegistroAcademia() {
+export default function StudentRegistrationPage() {
   const router = useRouter()
   const { status } = useSession()
 
@@ -132,7 +131,7 @@ export default function FormularioRegistroAcademia() {
     setTimeout(() => {
       console.log('Formulário enviado:', formData)
       setIsSubmitting(false)
-      router.push('/registro-sucesso')
+      router.push('/')
     }, 1500)
   }
 
