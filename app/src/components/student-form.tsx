@@ -73,11 +73,7 @@ const defaultFormData: FormData = {
 }
 
 const planosAssinatura = [
-  { id: 'basico', name: 'Básico - Acesso em horário reduzido', price: 49.90 },
-  { id: 'padrao', name: 'Padrão - Acesso total', price: 79.90 },
-  { id: 'premium', name: 'Premium - Acesso total + Personal Trainer', price: 129.90 },
-  { id: 'estudante', name: 'Estudante - Carteirinha de estudante válida', price: 59.90 },
-  { id: 'anual', name: 'Anual - Plano anual pré-pago', price: 899.90 },
+  { id: 'padrao', name: 'Padrão - Acesso total', price: 80.00 },
 ]
 
 interface StudentFormProps {
