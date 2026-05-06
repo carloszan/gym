@@ -26,6 +26,18 @@ export interface ReportData {
   }
 }
 
+const TZ_OFFSET_MS = 3 * 60 * 60 * 1000
+
+function toLocalDate(utcIso: string): string {
+  return new Date(new Date(utcIso).getTime() - TZ_OFFSET_MS).toISOString().slice(0, 10)
+}
+
+function localDayEndUTC(localDate: string): string {
+  const d = new Date(`${localDate}T00:00:00.000Z`)
+  d.setUTCDate(d.getUTCDate() + 1)
+  return d.toISOString().slice(0, 10) + 'T02:59:59.999Z'
+}
+
 export async function GET(req: NextRequest) {
   const session = await auth()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -38,8 +50,8 @@ export async function GET(req: NextRequest) {
   const startDate = searchParams.get('startDate') ?? thirtyDaysAgo.toISOString().slice(0, 10)
   const endDate = searchParams.get('endDate') ?? now.toISOString().slice(0, 10)
 
-  const startISO = `${startDate}T00:00:00.000Z`
-  const endISO = `${endDate}T23:59:59.999Z`
+  const startISO = `${startDate}T03:00:00.000Z`
+  const endISO = localDayEndUTC(endDate)
 
   const snapshot = await adminDb
     .collection('checkins')
@@ -64,7 +76,7 @@ export async function GET(req: NextRequest) {
 
   const byDayMap: Record<string, number> = {}
   for (const c of checkins) {
-    const date = c.checkedInAt.slice(0, 10)
+    const date = toLocalDate(c.checkedInAt)
     byDayMap[date] = (byDayMap[date] ?? 0) + 1
   }
 
