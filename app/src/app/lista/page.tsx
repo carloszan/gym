@@ -35,6 +35,11 @@ export default function ListaPage() {
   const [currentPage, setCurrentPage] = useState(0)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
+  const [searchInput, setSearchInput] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [confirmingCheckInId, setConfirmingCheckInId] = useState<string | null>(null)
+  const [checkingInId, setCheckingInId] = useState<string | null>(null)
+  const [checkinResult, setCheckinResult] = useState<{ id: string; success: boolean; message: string } | null>(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -43,10 +48,9 @@ export default function ListaPage() {
   }, [status, router])
 
   useEffect(() => {
-    if (status !== 'authenticated') return
-    fetchPage(cursors[currentPage])
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, currentPage])
+    const timer = setTimeout(() => setSearchTerm(searchInput.trim()), 500)
+    return () => clearTimeout(timer)
+  }, [searchInput])
 
   async function fetchPage(cursor: string) {
     setLoading(true)
@@ -65,6 +69,34 @@ export default function ListaPage() {
       setLoading(false)
     }
   }
+
+  async function fetchSearch(term: string) {
+    setLoading(true)
+    setError('')
+    try {
+      const params = new URLSearchParams({ search: term })
+      const res = await fetch(`/api/students?${params}`)
+      if (!res.ok) throw new Error('Erro ao buscar alunos')
+      const data: ApiResponse = await res.json()
+      setStudents(data.students)
+      setHasMore(false)
+    } catch {
+      setError('Não foi possível buscar os alunos. Tente novamente.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (status !== 'authenticated') return
+    if (searchTerm) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      fetchSearch(searchTerm)
+      return
+    }
+    fetchPage(cursors[currentPage])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, currentPage, searchTerm])
 
   function goNext() {
     const nextCursor = students[students.length - 1].id
@@ -91,6 +123,29 @@ export default function ListaPage() {
     }
   }
 
+  async function checkIn(student: Student) {
+    setCheckingInId(student.id)
+    try {
+      const res = await fetch('/api/checkin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentId: student.id }),
+      })
+      const data = await res.json()
+      setCheckinResult({
+        id: student.id,
+        success: data.success,
+        message: data.success ? `${data.firstName} ${data.lastName} registrado(a)!` : data.message,
+      })
+    } catch {
+      setCheckinResult({ id: student.id, success: false, message: 'Não foi possível registrar o check-in.' })
+    } finally {
+      setCheckingInId(null)
+      setConfirmingCheckInId(null)
+      setTimeout(() => setCheckinResult(current => (current?.id === student.id ? null : current)), 3000)
+    }
+  }
+
   function formatDate(iso: string) {
     if (!iso) return '—'
     return new Date(iso).toLocaleDateString('pt-BR')
@@ -104,6 +159,20 @@ export default function ListaPage() {
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800">Lista de Alunos</h1>
           <p className="text-gray-500 text-sm mt-1">Alunos cadastrados na academia</p>
+        </div>
+
+        <div className="mb-4">
+          <input
+            type="text"
+            value={searchInput}
+            onChange={e => {
+              setSearchInput(e.target.value)
+              setCursors([''])
+              setCurrentPage(0)
+            }}
+            placeholder="Buscar por nome ou sobrenome..."
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
         {error && (
@@ -121,7 +190,7 @@ export default function ListaPage() {
           </div>
         ) : students.length === 0 ? (
           <div className="text-center py-20 text-gray-500">
-            Nenhum aluno cadastrado ainda.
+            {searchTerm ? 'Nenhum aluno encontrado para essa busca.' : 'Nenhum aluno cadastrado ainda.'}
           </div>
         ) : (
           <>
@@ -153,6 +222,32 @@ export default function ListaPage() {
                           <Link href={`/students/${s.id}/edit`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
                             Editar
                           </Link>
+                          {confirmingCheckInId === s.id ? (
+                            <span className="flex items-center gap-2 text-sm">
+                              <span className="text-gray-600">Tem certeza?</span>
+                              <button
+                                onClick={() => checkIn(s)}
+                                disabled={checkingInId === s.id}
+                                className="text-green-600 hover:text-green-800 font-medium disabled:opacity-40"
+                              >
+                                Sim
+                              </button>
+                              <button
+                                onClick={() => setConfirmingCheckInId(null)}
+                                disabled={checkingInId === s.id}
+                                className="text-gray-500 hover:text-gray-700 font-medium disabled:opacity-40"
+                              >
+                                Não
+                              </button>
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => setConfirmingCheckInId(s.id)}
+                              className="text-green-600 hover:text-green-800 text-sm font-medium"
+                            >
+                              Check-in
+                            </button>
+                          )}
                           {deletingId === s.id ? (
                             <span className="flex items-center gap-2 text-sm">
                               <span className="text-gray-600">Tem certeza?</span>
@@ -180,6 +275,11 @@ export default function ListaPage() {
                             </button>
                           )}
                         </div>
+                        {checkinResult?.id === s.id && (
+                          <p className={`mt-1 text-xs ${checkinResult.success ? 'text-green-600' : 'text-red-600'}`}>
+                            {checkinResult.message}
+                          </p>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -203,6 +303,32 @@ export default function ListaPage() {
                     <Link href={`/students/${s.id}/edit`} className="text-blue-600 text-sm font-medium">
                       Editar →
                     </Link>
+                    {confirmingCheckInId === s.id ? (
+                      <span className="flex items-center gap-2 text-sm">
+                        <span className="text-gray-600">Tem certeza?</span>
+                        <button
+                          onClick={() => checkIn(s)}
+                          disabled={checkingInId === s.id}
+                          className="text-green-600 hover:text-green-800 font-medium disabled:opacity-40"
+                        >
+                          Sim
+                        </button>
+                        <button
+                          onClick={() => setConfirmingCheckInId(null)}
+                          disabled={checkingInId === s.id}
+                          className="text-gray-500 hover:text-gray-700 font-medium disabled:opacity-40"
+                        >
+                          Não
+                        </button>
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => setConfirmingCheckInId(s.id)}
+                        className="text-green-600 hover:text-green-800 text-sm font-medium"
+                      >
+                        Check-in
+                      </button>
+                    )}
                     {deletingId === s.id ? (
                       <span className="flex items-center gap-2 text-sm">
                         <span className="text-gray-600">Tem certeza?</span>
@@ -230,11 +356,17 @@ export default function ListaPage() {
                       </button>
                     )}
                   </div>
+                  {checkinResult?.id === s.id && (
+                    <p className={`text-xs ${checkinResult.success ? 'text-green-600' : 'text-red-600'}`}>
+                      {checkinResult.message}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
 
             {/* Pagination */}
+            {!searchTerm && (
             <div className="mt-6 flex items-center justify-between">
               <button
                 onClick={goPrev}
@@ -252,6 +384,7 @@ export default function ListaPage() {
                 Próximo →
               </button>
             </div>
+            )}
           </>
         )}
       </div>

@@ -20,6 +20,18 @@ export async function GET(req: NextRequest) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { searchParams } = new URL(req.url)
+  const search = searchParams.get('search')?.trim()
+
+  if (search) {
+    const snapshot = await adminDb.collection('students').orderBy('createdAt', 'desc').get()
+    const term = search.toLowerCase()
+    const students = snapshot.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter((s: Record<string, unknown>) => `${s.firstName ?? ''} ${s.lastName ?? ''}`.toLowerCase().includes(term))
+
+    return NextResponse.json({ students, hasMore: false })
+  }
+
   const limit = Math.min(parseInt(searchParams.get('limit') ?? '20'), 100)
   const startAfterId = searchParams.get('startAfter')
 
