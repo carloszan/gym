@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { analiseItems } from "@/lib/analises";
 
 interface Props {
   isLoggedIn: boolean;
@@ -60,6 +61,18 @@ export default function MobileMenu({ isLoggedIn, onSignOut }: Props) {
               >
                 Cadastrar Aluno
               </Link>
+              <div className="px-3 pt-2 pb-1 text-xs font-semibold uppercase text-gray-400">
+                Análises
+              </div>
+              {analiseItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="block text-gray-700 hover:text-gray-900 pl-6 pr-3 py-2 rounded-md text-base font-medium"
+                >
+                  {item.label}
+                </Link>
+              ))}
             </>
           )}
 

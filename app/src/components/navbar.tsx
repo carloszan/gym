@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { auth, signOut } from "@/auth";
 import MobileMenu from "./mobile-menu";
+import AnalisesMenu from "./analises-menu";
 
 export default async function Navbar() {
   const session = await auth();
@@ -50,6 +51,7 @@ export default async function Navbar() {
                   >
                     Cadastrar Aluno
                   </Link>
+                  <AnalisesMenu />
                 </>
               )}
 
